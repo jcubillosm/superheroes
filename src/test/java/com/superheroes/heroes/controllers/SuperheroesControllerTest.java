@@ -4,6 +4,7 @@ package com.superheroes.heroes.controllers;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -34,8 +35,10 @@ public class SuperheroesControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SuperheroesService service;
+    private SuperheroesService superheroesService;
     private ObjectMapper mapper;
+    private final String BASE_URL = "/superheroes";
+    
     @BeforeEach
     void setUp() {
         this.mapper = new ObjectMapper();
@@ -48,9 +51,9 @@ public class SuperheroesControllerTest {
     	heroesList.add(new Superheroe(2L,"Superman"));
     	
     	
-        when(this.service.getAllSuperheroes()).thenReturn(heroesList);
+        when(superheroesService.getAllSuperheroes()).thenReturn(heroesList);
 
-        mockMvc.perform(get("/superheroes")
+        mockMvc.perform(get(BASE_URL)
                 .contentType(APPLICATION_JSON))
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].name").value("Hulk"))
@@ -61,24 +64,47 @@ public class SuperheroesControllerTest {
     }
     @Test
     void whenGetSuperheroedById_returnHeroe() throws Exception {
+    	Long id = 1L;
+    	String name = "Hulk";
+    	Superheroe heroeByIdSuperheroe = new Superheroe(1L,"Hulk");
     	
-        when(this.service.getSuperheroeById(1L)).thenReturn(new Superheroe(1L,"Hulk"));
+        when(superheroesService.getSuperheroeById(id)).thenReturn(heroeByIdSuperheroe);
 
-        mockMvc.perform(get("/superheroes/1")
+        mockMvc.perform(get(BASE_URL +"/"+ id)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Hulk"));
+                .andExpect(jsonPath("$.name").value(name));
 
-        verify(this.service).getSuperheroeById(1L);
+        verify(superheroesService).getSuperheroeById(id);
     }
     @Test
     void whenGetSuperheroedById_returnException() throws Exception  {
-    	when(this.service.getSuperheroeById(20L)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID "));
+    	Long id = 20L;
+    	when(superheroesService.getSuperheroeById(id)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID "));
 
-        Exception heroe = assertThrows(ResourceNotFoundException.class, () -> this.service.getSuperheroeById(20L));
+        Exception heroe = assertThrows(ResourceNotFoundException.class, () -> superheroesService.getSuperheroeById(id));
         assertEquals(ResourceNotFoundException.class, heroe.getClass());
 
-        verify(this.service).getSuperheroeById(20L);
+        verify(superheroesService).getSuperheroeById(id);
+    }
+    @Test
+    void whenGetSuperheroeByPattern_returnHeroesList() throws Exception {
+    	String pattern = "man";
+       	List<Superheroe> heroesList = new ArrayList<Superheroe>();
+    	heroesList.add(new Superheroe(1L,"Hulk"));
+    	heroesList.add(new Superheroe(2L,"Superman"));
+        when(superheroesService.getSuperheroeByPattern(argThat(pattern::equals))).thenReturn(heroesList);
+
+        mockMvc.perform(get(BASE_URL + "/findByPattern/" + pattern)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].name").value("Hulk"))
+                .andExpect(jsonPath("$[1].name").value("Superman"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json(this.mapper.writeValueAsString(heroesList)));
+
+        verify(superheroesService).getSuperheroeByPattern(pattern);
     }
 }

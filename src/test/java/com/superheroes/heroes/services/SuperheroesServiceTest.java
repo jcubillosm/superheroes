@@ -3,6 +3,7 @@ package com.superheroes.heroes.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -23,41 +24,58 @@ import com.superheroes.heroes.services.impl.SuperheroesServiceImpl;
 @SpringBootTest
 public class SuperheroesServiceTest {
 	 @InjectMocks
-	    private SuperheroesServiceImpl service;
+	    private SuperheroesServiceImpl superheroesService;
 
 	    @Mock
-	    private SuperheroesRepository repository;
+	    private SuperheroesRepository superheroesRepository;
 
 	    @Test
 	    void whenGetAllSuperheroesService_returnHeroesList() throws Exception  {
 	    	List<Superheroe> heroesList = new ArrayList<Superheroe>();
 	    	heroesList.add(new Superheroe(1L,"Hulk"));
 	    	heroesList.add(new Superheroe(2L,"Superman"));
-	        when(repository.findAll()).thenReturn(heroesList);
+	        when(superheroesRepository.findAll()).thenReturn(heroesList);
 
-	        List<Superheroe> heroesdb = this.service.getAllSuperheroes();
+	        List<Superheroe> heroesdb = superheroesService.getAllSuperheroes();
 
 	        assertEquals(heroesList, heroesdb);
-	        verify(repository).findAll();
+	        verify(superheroesRepository).findAll();
 	    }
 	    @Test
 	    void whenGetSuperheroedByIdService_returnHeroe() throws Exception  {
+	    	Long id = 1L;
+	    	String name = "Hulk";
+	    	Superheroe heroeByIdSuperheroe = new Superheroe(id,"Hulk");
 	    	
-	    	when(repository.findById(anyLong())).thenReturn(Optional.of(new Superheroe(1L, "Hulk")));
-	    	Superheroe heroesdb = service.getSuperheroeById(1L);
-			assertEquals(heroesdb.getName(), "Hulk");	    
+	    	when(superheroesRepository.findById(anyLong())).thenReturn(Optional.of(heroeByIdSuperheroe));
+	    	Superheroe heroesdb = superheroesService.getSuperheroeById(id);
+			assertEquals(heroesdb.getName(), name);	    
 	    
-	        verify(this.repository).findById(1L);
+	        verify(superheroesRepository).findById(id);
 	    }
 
 	    @Test
 	    void whenGetSuperheroedByIdService_returnException() throws Exception  {
-	        when(this.repository.findById(20L)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID"));
+	    	Long id = 20L;
+	        when(superheroesRepository.findById(id)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID"));
 
-	        Exception heroesdb = assertThrows(ResourceNotFoundException.class, () -> this.service.getSuperheroeById(20L));
+	        Exception heroesdb = assertThrows(ResourceNotFoundException.class, () -> superheroesService.getSuperheroeById(id));
 	        assertEquals(ResourceNotFoundException.class, heroesdb.getClass());
 
-	        verify(this.repository).findById(20L);
-	    }	    
+	        verify(superheroesRepository).findById(id);
+	    }	
+	    @Test
+	    void whenGetSuperheroeByPatternService_returnHeroesList() {
+	    	String pattern = "man";
+	       	List<Superheroe> heroesList = new ArrayList<Superheroe>();
+	    	heroesList.add(new Superheroe(1L,"Hulk"));
+	    	heroesList.add(new Superheroe(2L,"Superman"));
+	        when(superheroesRepository.findByPattern(argThat(arg -> arg.equals("%" + pattern + "%")))).thenReturn(heroesList);
+
+	        List<Superheroe> heroesdb = superheroesService.getSuperheroeByPattern(pattern);
+
+	        assertEquals(heroesList, heroesdb);
+	        verify(superheroesRepository).findByPattern("%" + pattern + "%");
+	    }
 
 }
