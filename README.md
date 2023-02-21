@@ -1,2 +1,2 @@
-# superheroes_2023
+# superheroes
 Proyecto para consultar, modificar o eliminar superheroes
