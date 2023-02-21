@@ -15,17 +15,25 @@ import com.superheroes.heroes.services.SuperheroesService;
 public class SuperheroesServiceImpl implements SuperheroesService{
 
 	@Autowired
-	SuperheroesRepository repository;
+	SuperheroesRepository superheroesRepository;
 	@Override
 	@Transactional(readOnly = true)
 	public List<Superheroe> getAllSuperheroes() {
-	    return this.repository.findAll();
+	    return superheroesRepository.findAll();
 	}
 	
     @Override
     @Transactional(readOnly = true)
     public Superheroe getSuperheroeById(Long id) {
-        return this.repository.findById(id)
+        return superheroesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Superhero with id: " + id + " not found ")));
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Superheroe> getSuperheroeByPattern(String pattern) {
+    	return superheroesRepository.findByPattern(String.format("%%%s%%", pattern));
+    	
+    }
+    
 }

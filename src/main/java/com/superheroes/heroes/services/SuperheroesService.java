@@ -10,5 +10,7 @@ public interface SuperheroesService {
 	
 	Superheroe getSuperheroeById(Long id);
 	
+	List<Superheroe> getSuperheroeByPattern(String pattern);
+	
 	
 }

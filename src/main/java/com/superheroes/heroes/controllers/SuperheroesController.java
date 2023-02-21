@@ -19,16 +19,21 @@ import com.superheroes.heroes.services.SuperheroesService;
 @RequestMapping("/superheroes")
 public class SuperheroesController {
 	@Autowired
-	SuperheroesService service;
+	SuperheroesService superheroesService;
+	
     @GetMapping
     @ResponseStatus(OK)
     public List<Superheroe> getAllSuperheroes() {
-        return this.service.getAllSuperheroes();
+        return superheroesService.getAllSuperheroes();
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getSuperheroeById(@PathVariable Long id) {
-        Superheroe heroe = this.service.getSuperheroeById(id);
+        Superheroe heroe = superheroesService.getSuperheroeById(id);
         return ResponseEntity.ok(heroe);
+    }
+    @GetMapping("/findByPattern/{pattern}")
+    public List<Superheroe> getSuperheroeByPattern(@PathVariable String pattern) {
+        return superheroesService.getSuperheroeByPattern(pattern);
     }
     
     
