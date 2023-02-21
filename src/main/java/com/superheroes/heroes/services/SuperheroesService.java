@@ -12,5 +12,5 @@ public interface SuperheroesService {
 	
 	List<Superheroe> getSuperheroeByPattern(String pattern);
 	
-	
+	Superheroe updateSuperheroe(Superheroe superheroe);
 }
