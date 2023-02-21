@@ -1,9 +1,9 @@
 package com.superheroes.heroes.controllers;
 
 
-import static com.w2m.superheroes.data.Data.MANOLITO;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.superheroes.heroes.exceptions.ResourceNotFoundException;
 import com.superheroes.heroes.models.Superheroe;
 import com.superheroes.heroes.services.SuperheroesService;
 
@@ -59,16 +60,25 @@ public class SuperheroesControllerTest {
                 .andExpect(jsonPath("$").isArray()).andDo(print());
     }
     @Test
-    void whenFindById_returnHeroe() throws Exception {
+    void whenGetSuperheroedById_returnHeroe() throws Exception {
     	
-        when(this.service.findById(argThat(arg -> arg.equals(3L)))).thenReturn(MANOLITO());
+        when(this.service.getSuperheroedById(1L)).thenReturn(new Superheroe(1L,"Hulk"));
 
-        this.mvc.perform(get("/super-heroes/3")
+        mockMvc.perform(get("/superheroes/1")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$.name").value("Manolito el fuerte"));
+                .andExpect(jsonPath("$.name").value("Hulk"));
 
-        verify(this.service).findById(3L);
+        verify(this.service).getSuperheroedById(1L);
+    }
+    @Test
+    void whenGetSuperheroedById_returnException() throws Exception  {
+    	when(this.service.getSuperheroedById(20L)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID "));
+
+        Exception heroe = assertThrows(ResourceNotFoundException.class, () -> this.service.getSuperheroedById(20L));
+        assertEquals(ResourceNotFoundException.class, heroe.getClass());
+
+        verify(this.service).getSuperheroedById(20L);
     }
 }

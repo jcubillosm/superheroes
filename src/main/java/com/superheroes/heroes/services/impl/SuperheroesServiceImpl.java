@@ -26,6 +26,6 @@ public class SuperheroesServiceImpl implements SuperheroesService{
     @Transactional(readOnly = true)
     public Superheroe getSuperheroedById(Long id) {
         return this.repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Super Hero not found with id %d", id)));
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Superhero with id: " + id + " not found ")));
     }
 }
