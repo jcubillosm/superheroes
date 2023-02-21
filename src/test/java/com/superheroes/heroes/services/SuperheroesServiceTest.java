@@ -83,7 +83,7 @@ public class SuperheroesServiceTest {
 
 	        when(superheroesRepository.save(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
 
-	        assertEquals(heroe, superheroesService.updateSuperheroe(heroe));
+	        assertEquals(heroe, superheroesService.modifySuperheroe(heroe));
 	        verify(superheroesRepository).save(heroe);
 	    }
 

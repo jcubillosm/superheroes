@@ -113,10 +113,10 @@ public class SuperheroesControllerTest {
     }
     
     @Test
-    void whenUpdateSuperheroe_returnOk() throws Exception {
+    void whenModifySuperheroe_returnOk() throws Exception {
     	Superheroe heroe = new Superheroe(8L, "Lobezno");
 
-        when(superheroesService.updateSuperheroe(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
+        when(superheroesService.modifySuperheroe(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
 
         mockMvc.perform(put(BASE_URL)
                         .contentType(APPLICATION_JSON)

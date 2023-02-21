@@ -32,7 +32,7 @@ public class SuperheroesServiceImpl implements SuperheroesService{
     	
     }
     @Override   
-    public Superheroe updateSuperheroe(Superheroe superheroe) {
+    public Superheroe modifySuperheroe(Superheroe superheroe) {
         return (superheroesRepository.save(superheroe));
     }
     @Override
