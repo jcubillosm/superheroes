@@ -8,7 +8,7 @@ public interface SuperheroesService {
 
 	List<Superheroe> getAllSuperheroes();
 	
-	Superheroe getSuperheroedById(Long id);
+	Superheroe getSuperheroeById(Long id);
 	
 	
 }

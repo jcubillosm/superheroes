@@ -24,7 +24,7 @@ public class SuperheroesServiceImpl implements SuperheroesService{
 	
     @Override
     @Transactional(readOnly = true)
-    public Superheroe getSuperheroedById(Long id) {
+    public Superheroe getSuperheroeById(Long id) {
         return this.repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Superhero with id: " + id + " not found ")));
     }

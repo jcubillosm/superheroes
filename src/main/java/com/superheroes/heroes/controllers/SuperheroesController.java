@@ -27,7 +27,7 @@ public class SuperheroesController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getSuperheroeById(@PathVariable Long id) {
-        Superheroe heroe = this.service.getSuperheroedById(id);
+        Superheroe heroe = this.service.getSuperheroeById(id);
         return ResponseEntity.ok(heroe);
     }
     

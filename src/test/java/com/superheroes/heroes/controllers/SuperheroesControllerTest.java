@@ -62,7 +62,7 @@ public class SuperheroesControllerTest {
     @Test
     void whenGetSuperheroedById_returnHeroe() throws Exception {
     	
-        when(this.service.getSuperheroedById(1L)).thenReturn(new Superheroe(1L,"Hulk"));
+        when(this.service.getSuperheroeById(1L)).thenReturn(new Superheroe(1L,"Hulk"));
 
         mockMvc.perform(get("/superheroes/1")
                         .contentType(APPLICATION_JSON))
@@ -70,15 +70,15 @@ public class SuperheroesControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Hulk"));
 
-        verify(this.service).getSuperheroedById(1L);
+        verify(this.service).getSuperheroeById(1L);
     }
     @Test
     void whenGetSuperheroedById_returnException() throws Exception  {
-    	when(this.service.getSuperheroedById(20L)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID "));
+    	when(this.service.getSuperheroeById(20L)).thenThrow(new ResourceNotFoundException("NOT_FOUND_BY_ID "));
 
-        Exception heroe = assertThrows(ResourceNotFoundException.class, () -> this.service.getSuperheroedById(20L));
+        Exception heroe = assertThrows(ResourceNotFoundException.class, () -> this.service.getSuperheroeById(20L));
         assertEquals(ResourceNotFoundException.class, heroe.getClass());
 
-        verify(this.service).getSuperheroedById(20L);
+        verify(this.service).getSuperheroeById(20L);
     }
 }
