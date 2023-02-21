@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,7 +61,7 @@ public class SuperheroesControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Superman"))
                 .andExpect(jsonPath("$", hasSize(tam)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray()).andDo(print());
+                .andExpect(jsonPath("$").isArray());
     }
     @Test
     void whenGetSuperheroedById_returnHeroe() throws Exception {
@@ -107,4 +108,20 @@ public class SuperheroesControllerTest {
 
         verify(superheroesService).getSuperheroeByPattern(pattern);
     }
+    
+    @Test
+    void whenUpdateSuperheroe_returnOk() throws Exception {
+    	Superheroe heroe = new Superheroe(8L, "Lobezno");
+
+        when(superheroesService.updateSuperheroe(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
+
+        mockMvc.perform(put("/superheroes")
+                        .contentType(APPLICATION_JSON)
+                        .content(this.mapper.writeValueAsString(heroe)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.name").value("Lobezno"))
+                .andExpect(content().json(this.mapper.writeValueAsString(heroe))).andDo(print());
+    }
+    
 }

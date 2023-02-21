@@ -77,5 +77,14 @@ public class SuperheroesServiceTest {
 	        assertEquals(heroesList, heroesdb);
 	        verify(superheroesRepository).findByPattern("%" + pattern + "%");
 	    }
+	    @Test
+	    void whenUpdateSuperheroeService_returnOk() {
+	    	Superheroe heroe = new Superheroe(8L, "Lobezno");
+
+	        when(superheroesRepository.save(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
+
+	        assertEquals(heroe, superheroesService.updateSuperheroe(heroe));
+	        verify(superheroesRepository).save(heroe);
+	    }
 
 }
