@@ -35,7 +35,10 @@ public class SuperheroesServiceImpl implements SuperheroesService{
     public Superheroe updateSuperheroe(Superheroe superheroe) {
         return (superheroesRepository.save(superheroe));
     }
-
+    @Override
+    public void deleteById(Long id) {
+    	superheroesRepository.deleteById(id);
+    }
 
     
 }

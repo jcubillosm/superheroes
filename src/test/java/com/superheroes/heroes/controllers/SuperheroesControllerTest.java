@@ -4,10 +4,13 @@ package com.superheroes.heroes.controllers;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -115,13 +118,23 @@ public class SuperheroesControllerTest {
 
         when(superheroesService.updateSuperheroe(argThat(arg -> arg.getId().equals(8L)))).thenReturn(heroe);
 
-        mockMvc.perform(put("/superheroes")
+        mockMvc.perform(put(BASE_URL)
                         .contentType(APPLICATION_JSON)
                         .content(this.mapper.writeValueAsString(heroe)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value("Lobezno"))
                 .andExpect(content().json(this.mapper.writeValueAsString(heroe))).andDo(print());
+    }
+    @Test
+    void whenDeleteById_returnNoContent() throws Exception {
+        doNothing().when(superheroesService).deleteById(any());
+
+        mockMvc.perform(delete(BASE_URL+"/7")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(superheroesService).deleteById(7L);
     }
     
 }

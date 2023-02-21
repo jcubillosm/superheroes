@@ -1,11 +1,13 @@
 package com.superheroes.heroes.controllers;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,6 +43,11 @@ public class SuperheroesController {
     @ResponseStatus(OK)
     public Superheroe updateSuperheroe(@RequestBody Superheroe superheroe) {
     	return superheroesService.updateSuperheroe(superheroe);
+    }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+    	superheroesService.deleteById(id);
     }
     
  
