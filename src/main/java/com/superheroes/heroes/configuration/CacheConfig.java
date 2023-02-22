@@ -1,4 +1,4 @@
-package com.superheroes.heroes;
+package com.superheroes.heroes.configuration;
 
 import java.util.Objects;
 
