@@ -67,6 +67,7 @@ public class SuperheroesController {
     	superheroesService.deleteById(id);
     }
     @DeleteMapping("/cache")
+    @ResponseStatus(NO_CONTENT)
     public void limpiarCacheSuperheroes() {
     	log.info("SuperheroesController: limpiarCacheSuperheroes");
     	Objects.requireNonNull(cacheManager.getCache("superheroes")).clear();

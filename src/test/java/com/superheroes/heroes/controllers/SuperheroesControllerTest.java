@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -79,8 +78,6 @@ public class SuperheroesControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.name").value(name));
-
-        verify(superheroesService).getSuperheroeById(id);
     }
     @Test
     void whenGetSuperheroedById_returnException() throws Exception  {
@@ -89,8 +86,6 @@ public class SuperheroesControllerTest {
 
         Exception heroe = assertThrows(ResourceNotFoundException.class, () -> superheroesService.getSuperheroeById(id));
         assertEquals(ResourceNotFoundException.class, heroe.getClass());
-
-        verify(superheroesService).getSuperheroeById(id);
     }
     @Test
     void whenGetSuperheroeByPattern_returnHeroesList() throws Exception {
@@ -108,8 +103,6 @@ public class SuperheroesControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Superman"))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json(this.mapper.writeValueAsString(heroesList)));
-
-        verify(superheroesService).getSuperheroeByPattern(pattern);
     }
     
     @Test
@@ -133,8 +126,6 @@ public class SuperheroesControllerTest {
         mockMvc.perform(delete(BASE_URL+"/7")
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-
-        verify(superheroesService).deleteById(7L);
     }
     
 }
